@@ -20,5 +20,8 @@ services:
             - '.:/app:rw'
             - './infra/docker/php/conf.d/symfony.dev.ini:/usr/local/etc/php/conf.d/symfony.ini:ro'
 
+    scheduler:
+        profiles: [ 'do-no-start' ]
+
     database:
         ports: [ '5432:5432' ]

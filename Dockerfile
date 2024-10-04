@@ -9,8 +9,6 @@ FROM dunglas/frankenphp:${FRANKENPHP_VERSION}-php${PHP_VERSION}-alpine AS app
 
 ARG EXTERNAL_USER_ID=1000
 
-ENV SERVER_NAME=:80
-
 RUN set -eux; \
     apk add --no-cache sqlite; \
     install-php-extensions zip pdo_pgsql pcntl opcache intl mbstring apcu; \
@@ -36,8 +34,10 @@ RUN set -eux; \
     echo "Setting User id (external): ${EXTERNAL_USER_ID}"; \
     sed -i -r s/"(www-data:x:)([[:digit:]]+):([[:digit:]]+):"/\\1${EXTERNAL_USER_ID}:${EXTERNAL_USER_ID}:/g /etc/passwd; \
     sed -i -r s/"(www-data:x:)([[:digit:]]+):"/\\1${EXTERNAL_USER_ID}:/g /etc/group; \
-    mkdir -p /var/run/php /app/var/data; \
-    chown -R www-data:www-data /app /var/www /usr/local/etc/php /var/run/php /home/www-data /config /data /app/var
+    mkdir -p /var/run/php /app/config/secrets; \
+    chown -R www-data:www-data /app /var/www /usr/local/etc/php /var/run/php /home/www-data /config /data /app/config/secrets
+
+VOLUME /app/config/secrets
 
 USER www-data
 
