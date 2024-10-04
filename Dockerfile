@@ -47,6 +47,7 @@ COPY --chown=www-data:www-data public public/
 COPY --chown=www-data:www-data src src/
 COPY --chown=www-data:www-data templates templates/
 COPY --chown=www-data:www-data translations translations/
+COPY --chown=www-data:www-data importmap.php ./importmap.php
 
 COPY assets assets/
 

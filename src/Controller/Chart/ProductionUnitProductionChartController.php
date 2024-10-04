@@ -21,7 +21,7 @@ final readonly class ProductionUnitProductionChartController
     {
     }
 
-    public function __invoke(ProductionUnit $productionUnit)
+    public function __invoke(ProductionUnit $productionUnit): array
     {
         $dataset = $this->productionValueRepository->findForUnitBetweenDates(
             $productionUnit,
