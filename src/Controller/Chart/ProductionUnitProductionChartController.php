@@ -25,7 +25,7 @@ final readonly class ProductionUnitProductionChartController
     {
         $dataset = $this->productionValueRepository->findForUnitBetweenDates(
             $productionUnit,
-            new \DateTimeImmutable('-1 day'),
+            new \DateTimeImmutable('-1 day -2 hour'),
             new \DateTimeImmutable('now'),
         );
 
