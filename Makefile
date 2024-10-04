@@ -1,4 +1,4 @@
-.PHONY: help reset db cli pull build composer_install yarn_install up run assets_build assets_serve clean
+.PHONY: help reset cli pull build composer_install up run psalm psalm_strict clean run_scheduler
 
 help: ## display this help message
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
@@ -46,3 +46,6 @@ test:
 clean:
 	docker compose down -v
 	rm -rf .configured vendor /public/assets /assets/vendor public/bundles var/*
+
+run_scheduler:
+	docker compose exec php php bin/console messenger:consume scheduler_recurrent --no-debug -vv
