@@ -18,6 +18,7 @@ services:
         command: [ 'frankenphp', 'run', '--config', '/etc/caddy/Caddyfile', '--watch' ]
         volumes:
             - '.:/app:rw'
+            - './config/secrets:/app/config/secrets:rw'
             - './infra/docker/php/conf.d/symfony.dev.ini:/usr/local/etc/php/conf.d/symfony.ini:ro'
 
     scheduler:

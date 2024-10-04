@@ -1,4 +1,4 @@
-.PHONY: help reset cli pull build composer_install up run psalm psalm_strict clean run_scheduler
+.PHONY: help reset cli pull build composer_install up run psalm psalm_strict clean run_scheduler importmap_install
 
 help: ## display this help message
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
@@ -32,7 +32,7 @@ infra/docker/tls/cert.pem:
 	mkdir -p infra/docker/tls
 	mkcert -cert-file infra/docker/tls/cert.pem -key-file=infra/docker/tls/cert.key localhost 127.0.0.1
 
-first_run: infra/docker/tls/cert.pem pull build composer_install yarn_install up reset assets_build
+first_run: infra/docker/tls/cert.pem pull build composer_install up reset importmap_install
 
 psalm:
 	@docker compose run --rm php ./vendor/bin/psalm
@@ -45,7 +45,10 @@ test:
 
 clean:
 	docker compose down -v
-	rm -rf .configured vendor /public/assets /assets/vendor public/bundles var/*
+	rm -rf .configured vendor public/assets assets/vendor public/bundles var/*
 
 run_scheduler:
 	docker compose exec php php bin/console messenger:consume scheduler_recurrent --no-debug -vv
+
+importmap_install:
+	@docker compose exec php bin/console importmap:install
