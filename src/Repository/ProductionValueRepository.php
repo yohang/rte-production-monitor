@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\ProductionSubUnit;
+use App\Entity\ProductionUnit;
 use App\Entity\ProductionValue;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -24,6 +25,27 @@ class ProductionValueRepository extends ServiceEntityRepository
                     ->setParameter('startDate', $startDate)
                     ->getQuery()
                     ->getSingleResult();
+    }
+
+    public function findForUnitBetweenDates(ProductionUnit $productionUnit, \DateTimeImmutable $startDate, \DateTimeImmutable $endDate): array
+    {
+        return $this->createQueryBuilder('pv')
+                    ->select('pv.startDate')
+                    ->addSelect('pv.endDate')
+                    ->addSelect('SUM(pv.value) as value')
+                    ->innerJoin('pv.productionSubUnit', 'psu')
+                    ->andWhere('psu.productionUnit = :productionUnit')
+                    ->andWhere('pv.startDate >= :startDate')
+                    ->andWhere('pv.startDate <= :endDate')
+                    ->groupBy('psu.productionUnit')
+                    ->addGroupBy('pv.startDate')
+                    ->addGroupBy('pv.endDate')
+                    ->orderBy('pv.startDate', 'ASC')
+                    ->setParameter('productionUnit', $productionUnit)
+                    ->setParameter('startDate', $startDate)
+                    ->setParameter('endDate', $endDate)
+                    ->getQuery()
+                    ->getResult();
     }
 
     public function save(ProductionValue $productionValue): void

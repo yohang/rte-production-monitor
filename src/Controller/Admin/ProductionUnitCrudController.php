@@ -10,6 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 final class ProductionUnitCrudController extends AbstractCrudController
@@ -22,7 +23,7 @@ final class ProductionUnitCrudController extends AbstractCrudController
         yield TextField::new('location');
 
         $subUnitsField = CollectionField::new('subUnits');
-        $valuesField = CollectionField::new('values');
+        $valuesField   = CollectionField::new('values');
 
         if (Crud::PAGE_DETAIL === $pageName) {
             $subUnitsField->setTemplatePath('admin/production_unit/sub_units.html.twig');
@@ -31,6 +32,10 @@ final class ProductionUnitCrudController extends AbstractCrudController
 
         yield $subUnitsField;
         yield $valuesField;
+
+        yield Field::new('productionChart')
+                   ->onlyOnDetail()
+                   ->setTemplatePath('admin/production_unit/production_chart.html.twig');
     }
 
     public function configureActions(Actions $actions): Actions
