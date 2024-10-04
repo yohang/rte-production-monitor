@@ -1,0 +1,32 @@
+services:
+    php:
+        image:      ygiarelli/rte-production-monitor-php:${DOCKER_TAG:-latest}
+        networks:   [ electricity-prod ]
+        depends_on: [ database ]
+        environment:
+            MESSENGER_TRANSPORT_DSN: doctrine://default?auto_setup=0
+            APP_SECRET: ${APP_SECRET:-!ChangeMe!}
+            DATABASE_URL: 'postgresql://${DATABASE_USER:-electricity-prod}:${DATABASE_PASSWORD:-electricity-prod}@database:5432/${DATABASE_DB:-electricity-prod}'
+        build:
+            context: .
+            target: app
+            args:
+                EXTERNAL_USER_ID: ${EXTERNAL_USER_ID-1000}
+            cache_from:
+                - ygiarelli/rte-production-monitor-php:latest
+                - ygiarelli/rte-production-monitor-php:${DOCKER_TAG:-latest}
+
+    database:
+        image: postgres:16-alpine3.20
+        volumes: [ 'database-data:/var/lib/postgresql/data' ]
+        networks: [ electricity-prod ]
+        environment:
+            - POSTGRES_DB=${DATABASE_DB:-electricity-prod}
+            - POSTGRES_USER=${DATABASE_USER:-electricity-prod}
+            - POSTGRES_PASSWORD=${DATABASE_PASSWORD:-electricity-prod}
+
+volumes:
+    database-data: ~
+
+networks:
+    electricity-prod: ~

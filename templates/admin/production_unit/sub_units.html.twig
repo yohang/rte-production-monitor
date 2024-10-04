@@ -1,0 +1,7 @@
+<ul>
+    {% for sub_unit in field.value %}
+        <li>
+            {{ sub_unit.name }} ({{ sub_unit.eicCode }})
+        </li>
+    {% endfor %}
+</ul>
