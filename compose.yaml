@@ -1,6 +1,6 @@
 services:
     php: &php
-        image:      ygiarelli/rte-production-monitor-php:${DOCKER_TAG:-latest}
+        image:      ygiarelli/rte-production-monitor:${DOCKER_TAG:-latest}
         networks:   [ electricity-prod ]
         depends_on: [ database ]
         environment:
@@ -13,8 +13,8 @@ services:
             args:
                 EXTERNAL_USER_ID: ${EXTERNAL_USER_ID-1000}
             cache_from:
-                - ygiarelli/rte-production-monitor-php:latest
-                - ygiarelli/rte-production-monitor-php:${DOCKER_TAG:-latest}
+                - ygiarelli/rte-production-monitor:latest
+                - ygiarelli/rte-production-monitor:${DOCKER_TAG:-latest}
 
     scheduler:
         <<: *php
