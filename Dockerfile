@@ -23,7 +23,7 @@ RUN set -eux; \
     sed -i -r s/"(www-data:x:)([[:digit:]]+):([[:digit:]]+):"/\\1${EXTERNAL_USER_ID}:${EXTERNAL_USER_ID}:/g /etc/passwd; \
     sed -i -r s/"(www-data:x:)([[:digit:]]+):"/\\1${EXTERNAL_USER_ID}:/g /etc/group; \
     mkdir -p /var/run/php /app/config/secrets; \
-    chown -R www-data:www-data /app /var/www /usr/local/etc/php /var/run/php /home/www-data /config /data /app/config/secrets
+    chown -R www-data:www-data /app /var/www /usr/local/etc/php /var/run/php /home/www-data /config /data /app/config
 
 VOLUME /app/config/secrets
 
@@ -38,7 +38,7 @@ COPY --chown=www-data:www-data composer.json composer.lock symfony.lock ./
 RUN set -eux; \
     composer install --prefer-dist --no-dev --no-autoloader --no-scripts --no-progress; \
     composer clear-cache; \
-    mkdir -p var
+    mkdir -p var assets/vendor
 
 COPY --chown=www-data:www-data bin bin/
 COPY --chown=www-data:www-data config config/
