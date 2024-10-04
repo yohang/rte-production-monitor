@@ -36,6 +36,7 @@ jobs:
                   tags: ${{ steps.meta.outputs.tags }}
                   labels: ${{ steps.meta.outputs.labels }}
                   set: |
-                      *.cache-from=type=gha
-                      *.cache-to=type=gha,mode=max
+                      *.tags=ygiarelli/rte-production-monitor:latest
+                      *.cache-from=type=registry,ref=ygiarelli/rte-production-monitor:latest
+                      *.cache-to=type=inline
 
