@@ -31,7 +31,7 @@ final readonly class ProductionUnitProductionChartController
 
         $chart = $this->chartBuilder->createChart(Chart::TYPE_LINE);
         $chart->setData([
-            'labels'   => array_map(fn (array $value) => $value['startDate']->format('H:i'), $dataset),
+            'labels'   => array_map(fn (array $value): string => $value['startDate']->format('H:i'), $dataset),
             'datasets' => [
                 [
                     'label' => 'Production',

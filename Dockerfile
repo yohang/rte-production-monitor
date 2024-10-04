@@ -1,9 +1,6 @@
 ARG PHP_VERSION=8.3
-ARG NODE_VERSION=22
 ARG FRANKENPHP_VERSION=1.2
 ARG ALPINE_VERSION=3.20
-
-FROM node:${NODE_VERSION}-alpine${ALPINE_VERSION} AS node
 
 FROM dunglas/frankenphp:${FRANKENPHP_VERSION}-php${PHP_VERSION}-alpine AS app
 
@@ -15,15 +12,6 @@ RUN set -eux; \
     sync
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-
-COPY --from=node /usr/local/bin/node /usr/local/bin/node
-COPY --from=node /usr/local/include/node /usr/local/include/node
-COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
-COPY --from=node /opt/yarn* /opt/yarn
-
-
-RUN ln -vs /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm
-RUN ln -vs /opt/yarn/bin/yarn /usr/local/bin/yarn
 
 COPY --chown=www-data:www-data infra/docker/php/Caddyfile /etc/caddy/Caddyfile
 COPY --chown=www-data:www-data infra/docker/php/docker-entrypoint /usr/local/bin/docker-entrypoint
@@ -66,6 +54,8 @@ RUN set -eux; \
     mkdir -p var/cache var/log; \
     composer install --prefer-dist --no-dev --no-progress; \
     composer dump-autoload --optimize --no-dev --classmap-authoritative; \
+    php bin/console importmap:install; \
+    php bin/console asset-map:compile; \
     php bin/console cache:clear; \
     php bin/console cache:warmup -eprod; \
     chmod +x bin/console; \
