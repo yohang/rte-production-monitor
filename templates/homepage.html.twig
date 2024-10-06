@@ -3,8 +3,8 @@
 {% block title '' %}
 
 {% block body %}
-    <div class="Homepage">
-        <turbo-frame class="Homepage__sidebar" id="homepage-sidebar">
+    <div class="{% block homepage_class 'Homepage' %}">
+        <turbo-frame class="Homepage__sidebar" id="homepage-sidebar" data-turbo-action="advance">
             {% block homepage_sidebar '' %}
         </turbo-frame>
 

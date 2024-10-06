@@ -1,27 +1,24 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Controller\Chart;
+namespace App\UX\Chart;
 
 use App\Entity\ProductionUnit;
 use App\Repository\ProductionValueRepository;
-use Symfony\Bridge\Twig\Attribute\Template;
-use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
 
-#[AsController]
-#[Template('chart/production_unit_production_chart.html.twig')]
-final readonly class ProductionUnitProductionChartController
+final readonly class ProductionChartFactory
 {
     public function __construct(
-        private ChartBuilderInterface     $chartBuilder,
         private ProductionValueRepository $productionValueRepository,
+        private ChartBuilderInterface $chartBuilder,
     )
     {
     }
 
-    public function __invoke(ProductionUnit $productionUnit): array
+
+    public function create(ProductionUnit $productionUnit): Chart
     {
         $dataset = $this->productionValueRepository->findForUnitBetweenDates(
             $productionUnit,
@@ -41,7 +38,13 @@ final readonly class ProductionUnitProductionChartController
                 ],
             ],
         ]);
+
         $chart->setOptions([
+            'plugins' => [
+                'legend' => [
+                    'display' => false,
+                ],
+            ],
             'scales' => [
                 'y' => [
                     'beginAtZero' => false,
@@ -50,8 +53,6 @@ final readonly class ProductionUnitProductionChartController
             ],
         ]);
 
-        return [
-            'chart' => $chart,
-        ];
+        return $chart;
     }
 }

@@ -1,0 +1,16 @@
+.SidebarList {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+
+    & .SidebarList__item {
+
+    }
+
+    & .SidebarList__productionUnitValue {
+        list-style-type: none;
+        margin-inline: 0;
+        margin-block: 1em;
+        padding: 0;
+    }
+}

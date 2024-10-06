@@ -7,6 +7,7 @@ use App\Entity\ProductionSubUnit;
 use App\Entity\ProductionUnit;
 use App\Entity\ProductionValue;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 class ProductionValueRepository extends ServiceEntityRepository
@@ -46,6 +47,28 @@ class ProductionValueRepository extends ServiceEntityRepository
                     ->setParameter('endDate', $endDate)
                     ->getQuery()
                     ->getResult();
+    }
+
+    public function findLastValueForProductionUnit(ProductionUnit $productionUnit): ?float
+    {
+        try {
+            return $this->createQueryBuilder('pv')
+                        ->select('pv.startDate HIDDEN')
+                        ->addSelect('pv.endDate HIDDEN')
+                        ->addSelect('SUM(pv.value) as value')
+                        ->innerJoin('pv.productionSubUnit', 'psu')
+                        ->andWhere('psu.productionUnit = :productionUnit')
+                        ->groupBy('psu.productionUnit')
+                        ->addGroupBy('pv.startDate')
+                        ->addGroupBy('pv.endDate')
+                        ->orderBy('pv.startDate', 'DESC')
+                        ->setMaxResults(1)
+                        ->setParameter('productionUnit', $productionUnit)
+                        ->getQuery()
+                        ->getSingleScalarResult();
+        } catch (NoResultException) {
+            return null;
+        }
     }
 
     public function save(ProductionValue $productionValue): void

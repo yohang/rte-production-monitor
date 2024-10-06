@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Behavior\Equatable;
 use App\Behavior\HasTimestamp;
 use App\Behavior\Impl\TimestampImpl;
 use App\Bridge\RTE\Model\ProductionUnit as RTEProductionUnit;
@@ -26,7 +27,7 @@ use Symfony\Component\Uid\Uuid;
 #[Entity(repositoryClass: ProductionUnitRepository::class)]
 #[Table]
 #[HasLifecycleCallbacks]
-class ProductionUnit implements HasTimestamp
+class ProductionUnit implements HasTimestamp, Equatable
 {
     use TimestampImpl;
 
@@ -136,6 +137,15 @@ class ProductionUnit implements HasTimestamp
         $this->name = $name;
     }
 
+    public function getCanonicalName(): string
+    {
+        if (null === $this->getFirstUnitOfGroup()) {
+            return $this->getName();
+        }
+
+        return preg_replace('/([\w ]+) \d+$/i', '$1', $this->getName());
+    }
+
     public function getLocation(): ?string
     {
         return $this->location;
@@ -201,6 +211,36 @@ class ProductionUnit implements HasTimestamp
         );
     }
 
+    public function getInstalledCapacity(): float
+    {
+        return array_reduce(
+            $this->getValues()->toArray(),
+            static function (float $capacity, ProductionUnitValues $value): float {
+                $endDate = $value->getEndDate();
+                if (null !== $endDate && $endDate < new \DateTimeImmutable()) {
+                    return $capacity;
+                }
+
+                return $capacity + $value->getInstalledCapacity();
+            },
+            .0,
+        );
+    }
+
+    public function getGroupInstalledCapacity(): float
+    {
+        if (null === $this->getFirstUnitOfGroup()) {
+            return $this->getInstalledCapacity();
+        }
+
+        return array_sum(
+            array_map(
+                static fn (ProductionUnit $unit): float => $unit->getInstalledCapacity(),
+                $this->getFirstUnitOfGroup()->getSiblings()->toArray(),
+            ),
+        );
+    }
+
     public function syncWithRTE(RTEProductionUnit $rteProductionUnit): void
     {
         $this->setName($rteProductionUnit->name);
@@ -210,6 +250,14 @@ class ProductionUnit implements HasTimestamp
     public function __toString(): string
     {
         return $this->name ?: 'A production unit with no name';
+    }
+
+    /**
+     * @param ProductionUnit $other
+     */
+    public function equals($other): bool
+    {
+        return $other instanceof self && $this->id->equals($other->id);
     }
 
     public static function fromRTEProductionUnit(RTEProductionUnit $rteProductionUnit): self

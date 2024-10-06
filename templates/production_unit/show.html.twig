@@ -1,27 +1,36 @@
 {% extends 'homepage.html.twig' %}
 
-{% block homepage_sidebar %}
-    <div>
-        <h2>
-            {{ production_unit.name }}
-        </h2>
+{% block homepage_class 'Homepage Homepage--sidebarOpen' %}
 
-        <ul>
-            {% for values in production_unit.values %}
-                <li>
-                    {{ values.type.name }}
-                    <dl>
-                        <dt>Connu depuis</dt>
-                        <dd>{{ values.startDate | format_datetime('long', 'none') }}</dd>
-                        <dt>Connu jusqu'à</dt>
-                        <dd>{{ values.endDate ? value.endDate | format_datetime('long', 'none') : 'En service' }}</dd>
-                        <dt>Capacité installée</dt>
-                        <dd>{{ values.installedCapacity }} MWh</dd>
-                        <dt>Tension de connexion</dt>
-                        <dd>{{ values.voltageLevelConnection }} kV</dd>
-                    </dl>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
+{% block homepage_sidebar %}
+    <ul class="SidebarList">
+        {% for production_unit in production_unit.firstUnitOfGroup ? production_unit.siblings : [production_unit] %}
+            <li class="SidebarList__item">
+                <h2>{{ production_unit.name }}</h2>
+
+                <ul class="SidebarList__productionUnitValue">
+                    {% for values in production_unit.values %}
+                        <li>
+                            <dl class="DefinitionList DefinitionList--inline">
+                                <dt>Type</dt>
+                                <dd>{{ ('production_unit.type.' ~ values.type.name) | trans }}</dd>
+                                <dt>Dernière production connue</dt>
+                                <dd>
+                                    {% set last_production_value = get_last_production_value_for_unit(production_unit) %}
+                                    {{ last_production_value }} MWh
+                                    ({{ max(last_production_value / values.installedCapacity, 0) | format_number(style: 'percent') }})
+                                </dd>
+                                <dt>Capacité installée</dt>
+                                <dd>{{ values.installedCapacity }} MWh</dd>
+                                <dt>Tension de connexion</dt>
+                                <dd>{{ values.voltageLevelConnection }} kV</dd>
+                            </dl>
+                        </li>
+                    {% endfor %}
+                </ul>
+
+                {{ render_chart(production_chart(production_unit)) }}
+            </li>
+        {% endfor %}
+    </ul>
 {% endblock %}

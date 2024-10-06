@@ -11,12 +11,13 @@ use Symfony\UX\Map\InfoWindow;
 use Symfony\UX\Map\Map;
 use Symfony\UX\Map\Marker;
 use Symfony\UX\Map\Point;
+use Twig\Environment;
 
 final readonly class HomepageMapFactory
 {
     public function __construct(
         private ProductionUnitRepository $productionUnitRepository,
-        private UrlGeneratorInterface    $urlGenerator,
+        private Environment              $twig,
     )
     {
     }
@@ -37,19 +38,24 @@ final readonly class HomepageMapFactory
             /**
              * @psalm-suppress PossiblyNullArgument
              */
+
+            if (
+                null !== $productionUnit->getFirstUnitOfGroup() &&
+                !$productionUnit->equals($productionUnit->getFirstUnitOfGroup())
+            ) {
+                continue;
+            }
+
             $map
                 ->addMarker(
                     new Marker(
                         new Point($productionUnit->getLatitude(), $productionUnit->getLongitude()),
-                        $productionUnit->getName(),
+                        $productionUnit->getCanonicalName(),
                         new InfoWindow(
-                            $productionUnit->getName(),
-                            sprintf(
-                                '<a href="%s" data-turbo-frame="homepage-sidebar">Détail</a>',
-                                $this->urlGenerator->generate(
-                                    'production_unit_show',
-                                    ['eicCode' => $productionUnit->getEicCode()],
-                                ),
+                            $productionUnit->getCanonicalName(),
+                            $this->twig->render(
+                                'production_unit/_info_window.html.twig',
+                                [ 'production_unit' => $productionUnit ],
                             ),
                         ),
                     ),

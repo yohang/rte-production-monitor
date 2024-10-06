@@ -54,6 +54,7 @@ final class ProductionUnitRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('pu')
             ->where('pu.latitude IS NOT NULL')
             ->andWhere('pu.longitude IS NOT NULL')
+            ->orderBy('pu.name', 'ASC')
             ->getQuery()
             ->getResult();
     }

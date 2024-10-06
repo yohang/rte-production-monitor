@@ -3,3 +3,21 @@ html, body {
     margin: 0;
     padding: 0;
 }
+
+.DefinitionList {
+    &.DefinitionList--inline {
+        display: grid;
+        grid-template-columns: min-content 1fr;
+        column-gap: 1em;
+
+        & dt {
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        & dd {
+            margin: 0;
+            padding: 0;
+        }
+    }
+}

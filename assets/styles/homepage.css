@@ -1,7 +1,18 @@
 .Homepage {
     height: 100%;
     display: grid;
-    grid-template-columns: 30em 1fr;
+    grid-template-columns: 0 1fr;
+    transition: 500ms;
+
+    &.Homepage--sidebarOpen {
+        grid-template-columns: 40em 1fr;
+        transition: 500ms;
+    }
+
+    .Homepage__sidebar {
+        overflow-y: auto;
+        padding-inline: 2em;
+    }
 
     .Homepage__mapContainer {
         height: 100%;

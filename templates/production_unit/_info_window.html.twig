@@ -1,0 +1,14 @@
+<dl>
+    <dt>Production actuelle</dt>
+    <dd>
+        {% set production = get_last_production_value_for_unit_group(production_unit) %}
+        {% set capacity = production_unit.groupInstalledCapacity %}
+
+        {{ production }} MWh / {{ capacity }} MWh
+        ({{ (production / capacity) | format_number(style: 'percent') }})
+    </dd>
+</dl>
+
+<a href="{{ path('production_unit_show', { eicCode: production_unit.eicCode }) }}" data-turbo-frame="homepage-sidebar">
+    Détails
+</a>

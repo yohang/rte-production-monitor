@@ -39,7 +39,7 @@ final class ReconciliateMultipleProductionUnitsCommand extends Command
 
             $prefix = preg_replace('/([\w ]+) \d+$/i', '$1', $productionUnit->getName());
             foreach ($this->productionUnitRepository->findByNamePrefix($prefix) as $otherProductionUnit) {
-                $productionUnit->setFirstUnitOfGroup($otherProductionUnit);
+                $otherProductionUnit->setFirstUnitOfGroup($productionUnit);
                 $this->productionUnitRepository->save($otherProductionUnit);
             }
 
