@@ -46,6 +46,18 @@ final class ProductionUnitRepository extends ServiceEntityRepository
             ->getSingleResult();
     }
 
+    /**
+     * @return array<int,ProductionUnit>
+     */
+    public function findHavingLatitudeAndLongitude(): array
+    {
+        return $this->createQueryBuilder('pu')
+            ->where('pu.latitude IS NOT NULL')
+            ->andWhere('pu.longitude IS NOT NULL')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function save(ProductionUnit $productionUnit): void
     {
         $this->getEntityManager()->persist($productionUnit);

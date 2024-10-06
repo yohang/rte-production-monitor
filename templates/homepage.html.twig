@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title '' %}
+
+{% block body %}
+    <div class="Homepage">
+        <turbo-frame class="Homepage__sidebar" id="homepage-sidebar">
+            {% block homepage_sidebar '' %}
+        </turbo-frame>
+
+        <div class="Homepage__mapContainer">
+            {{ ux_map(map, {style: 'height: 100%;'}) }}
+        </div>
+    </div>
+{% endblock %}

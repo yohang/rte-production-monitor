@@ -6,6 +6,7 @@
 parameters:
     env(RTE_CLIENT_ID): 'Inject RTE Client ID via env var or symfony secrets'
     env(RTE_CLIENT_SECRET): 'Inject RTE Client Secret via env var or symfony secrets'
+    env(UX_MAP_DSN): leaflet://default
 
 services:
     # default configuration for services in *this* file

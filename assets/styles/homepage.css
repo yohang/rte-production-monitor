@@ -1,0 +1,9 @@
+.Homepage {
+    height: 100%;
+    display: grid;
+    grid-template-columns: 30em 1fr;
+
+    .Homepage__mapContainer {
+        height: 100%;
+    }
+}
