@@ -13,9 +13,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Component\HttpClient\Response\StreamableInterface;
+use Symfony\Contracts\HttpClient\ResponseInterface;
 
 #[AsCommand(
-    name: 'app:import-power-plant-informations-from-opsd',
+    name: 'app:import:power-plant-informations-from-opsd',
     description: 'Import power plant informations from Open Power System Data',
 )]
 final class ImportPowerPlantInformationsFromOPSDCommand extends Command
@@ -44,6 +46,7 @@ final class ImportPowerPlantInformationsFromOPSDCommand extends Command
         $io = new SymfonyStyle($input, $output);
 
         $client   = HttpClient::create();
+        /** @var StreamableInterface&ResponseInterface $response */
         $response = $client->request('GET', $input->getArgument('csv'));
         $stream   = $response->toStream();
 
@@ -53,7 +56,7 @@ final class ImportPowerPlantInformationsFromOPSDCommand extends Command
             $longitude = $data[array_search('lon', $headerLine)];
             $eicCode   = $data[array_search('eic_code', $headerLine)];
 
-            if (!$eicCode) {
+            if (null === $eicCode) {
                 continue;
             }
 
@@ -61,7 +64,7 @@ final class ImportPowerPlantInformationsFromOPSDCommand extends Command
                 $productionUnit = $this->productionUnitRepository->findOneByEicCode($eicCode);
                 $io->info(sprintf('Updating %s', $productionUnit->getName()));
 
-                if ($latitude && $longitude) {
+                if (null !== $latitude && null !== $longitude) {
                     $productionUnit->setLatitude((float)$latitude);
                     $productionUnit->setLongitude((float)$longitude);
                 }

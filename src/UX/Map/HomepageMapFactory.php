@@ -34,6 +34,9 @@ final readonly class HomepageMapFactory
             );;
 
         foreach ($this->productionUnitRepository->findHavingLatitudeAndLongitude() as $productionUnit) {
+            /**
+             * @psalm-suppress PossiblyNullArgument
+             */
             $map
                 ->addMarker(
                     new Marker(
