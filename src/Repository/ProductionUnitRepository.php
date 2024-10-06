@@ -35,6 +35,17 @@ final class ProductionUnitRepository extends ServiceEntityRepository
             ->getSingleColumnResult();
     }
 
+    public function findOneByEicOrSubUnitEic(string $eicCode): ProductionUnit
+    {
+        return $this->createQueryBuilder('pu')
+            ->leftJoin('pu.subUnits', 'su')
+            ->where('pu.eicCode = :eicCode')
+            ->orWhere('su.eicCode = :eicCode')
+            ->setParameter('eicCode', $eicCode)
+            ->getQuery()
+            ->getSingleResult();
+    }
+
     public function save(ProductionUnit $productionUnit): void
     {
         $this->getEntityManager()->persist($productionUnit);
