@@ -58,6 +58,25 @@ final class ProductionUnitRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findFinishingByNumber(): array
+    {
+        return $this->createQueryBuilder('pu')
+            ->where('pu.name LIKE \'% _\'')
+            ->orderBy('pu.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByNamePrefix(string $prefix): array
+    {
+        return $this->createQueryBuilder('pu')
+            ->where('pu.name LIKE :name')
+            ->orderBy('pu.name', 'ASC')
+            ->setParameter('name', $prefix . ' %')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function save(ProductionUnit $productionUnit): void
     {
         $this->getEntityManager()->persist($productionUnit);

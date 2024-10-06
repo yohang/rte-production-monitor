@@ -35,6 +35,10 @@ class ProductionUnit implements HasTimestamp
     #[GeneratedValue(strategy: 'NONE')]
     private Uuid $id;
 
+    #[ManyToOne(targetEntity: ProductionUnit::class, inversedBy: 'siblings')]
+    #[JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?ProductionUnit $firstUnitOfGroup = null;
+
     #[ManyToOne(targetEntity: Producer::class)]
     #[JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Producer $producer = null;
@@ -68,6 +72,13 @@ class ProductionUnit implements HasTimestamp
     #[OneToMany(targetEntity: ProductionUnitValues::class, mappedBy: 'productionUnit')]
     private Collection $values;
 
+    /**
+     * @var Collection<int, ProductionUnit>
+     */
+    #[OrderBy(['name' => 'ASC'])]
+    #[OneToMany(targetEntity: ProductionUnit::class, mappedBy: 'firstUnitOfGroup')]
+    private Collection $siblings;
+
     public function __construct(string $eicCode, string $name)
     {
         $this->id       = Uuid::v6();
@@ -75,6 +86,7 @@ class ProductionUnit implements HasTimestamp
         $this->name     = $name;
         $this->subUnits = new ArrayCollection;
         $this->values   = new ArrayCollection;
+        $this->siblings = new ArrayCollection;
 
         $this->initialize();
     }
@@ -82,6 +94,16 @@ class ProductionUnit implements HasTimestamp
     public function getId(): Uuid
     {
         return $this->id;
+    }
+
+    public function getFirstUnitOfGroup(): ?ProductionUnit
+    {
+        return $this->firstUnitOfGroup;
+    }
+
+    public function setFirstUnitOfGroup(?ProductionUnit $firstUnitOfGroup): void
+    {
+        $this->firstUnitOfGroup = $firstUnitOfGroup;
     }
 
     public function getProducer(): ?Producer
@@ -152,6 +174,11 @@ class ProductionUnit implements HasTimestamp
     public function getValues(): Collection
     {
         return $this->values;
+    }
+
+    public function getSiblings(): Collection
+    {
+        return $this->siblings;
     }
 
     public function getLatestValues(): ProductionUnitValues
