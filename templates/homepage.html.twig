@@ -2,6 +2,8 @@
 
 {% block title '' %}
 
+{% block header_link_target ' data-turbo-frame="homepage-sidebar"' %}
+
 {% block body %}
     <div class="{% block homepage_class 'Homepage' %}">
         <turbo-frame class="Homepage__sidebar" id="homepage-sidebar" data-turbo-action="advance">
@@ -9,7 +11,7 @@
         </turbo-frame>
 
         <div class="Homepage__mapContainer">
-            {{ ux_map(map, {style: 'height: 100%;'}) }}
+            {{ ux_map(map, {style: 'height: 100%;', 'data-controller': 'homepage_map'}) }}
         </div>
     </div>
 {% endblock %}

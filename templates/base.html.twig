@@ -12,6 +12,9 @@
         {% endblock %}
     </head>
     <body>
+        <header class="Header">
+            <a href="{{ path('homepage') }}"{% block header_link_target '' %}>Production Monitor</a>
+        </header>
         {% block body %}{% endblock %}
     </body>
 </html>

@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\UX\Map;
 
 use App\Repository\ProductionUnitRepository;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Asset\Packages;
 use Symfony\UX\Map\Bridge\Leaflet\LeafletOptions;
 use Symfony\UX\Map\Bridge\Leaflet\Option\TileLayer;
 use Symfony\UX\Map\InfoWindow;
@@ -18,6 +18,7 @@ final readonly class HomepageMapFactory
     public function __construct(
         private ProductionUnitRepository $productionUnitRepository,
         private Environment              $twig,
+        private Packages                 $packages,
     )
     {
     }
@@ -58,6 +59,11 @@ final readonly class HomepageMapFactory
                                 [ 'production_unit' => $productionUnit ],
                             ),
                         ),
+                        [
+                            'icon' => $this->packages->getUrl(
+                                'icons/' . $productionUnit->getValues()[0]->getType()->getIconIdentifier() . '.svg'
+                            ),
+                        ]
                     ),
                 );
         }

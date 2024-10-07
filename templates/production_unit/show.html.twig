@@ -2,6 +2,8 @@
 
 {% block homepage_class 'Homepage Homepage--sidebarOpen' %}
 
+{% block header_link_target ' data-turbo-frame="homepage-sidebar"' %}
+
 {% block homepage_sidebar %}
     <ul class="SidebarList">
         {% for production_unit in production_unit.firstUnitOfGroup ? production_unit.siblings : [production_unit] %}

@@ -1,20 +1,24 @@
 .Homepage {
-    height: 100%;
+    height: calc(100% - var(--header-height));
     display: grid;
-    grid-template-columns: 0 1fr;
-    transition: 500ms;
-
-    &.Homepage--sidebarOpen {
-        grid-template-columns: 40em 1fr;
-        transition: 500ms;
-    }
+    position: relative;
 
     .Homepage__sidebar {
         overflow-y: auto;
         padding-inline: 2em;
+        width: var(--sidebar-width);
     }
 
     .Homepage__mapContainer {
-        height: 100%;
+        position: absolute;
+        inset: 0;
+        transition: 500ms;
+    }
+
+    &.Homepage--sidebarOpen {
+        .Homepage__mapContainer {
+            inset-inline-start: var(--sidebar-width);
+            transition: 500ms;
+        }
     }
 }
