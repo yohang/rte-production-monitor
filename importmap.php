@@ -35,6 +35,13 @@ return [
     'leaflet' => [
         'version' => '1.9.4',
     ],
+    'leaflet.markercluster' => [
+        'version' => '1.5.3',
+    ],
+    'leaflet.markercluster/dist/MarkerCluster.Default.css' => [
+        'version' => '1.5.3',
+        'type' => 'css',
+    ],
     'leaflet/dist/leaflet.min.css' => [
         'version' => '1.9.4',
         'type' => 'css',

@@ -1,30 +1,56 @@
 import { Controller } from "@hotwired/stimulus";
+import * as L from 'leaflet';
+import {MarkerClusterGroup} from 'leaflet.markercluster';
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 
 export default class extends Controller
 {
+    _cluster = null;
+    _map = null;
+
     connect() {
-        this.element.addEventListener('ux:map:marker:before-create', this._onMarkerBeforeCreate);
+        this._cluster = new MarkerClusterGroup();
+
+        this.element.addEventListener('ux:map:connect', this._onConnect.bind(this));
+        this.element.addEventListener('ux:map:marker:before-create', this._onMarkerBeforeCreate.bind(this));
+        this.element.addEventListener('ux:map:marker:after-create', this._onMarkerAfterCreate.bind(this));
     }
 
     disconnect() {
-        this.element.removeEventListener('ux:map:marker:before-create', this._onMarkerBeforeCreate);
+        this.element.removeEventListener('ux:map:connect', this._onConnect.bind(this));
+        this.element.removeEventListener('ux:map:marker:before-create', this._onMarkerBeforeCreate.bind(this));
+        this.element.removeEventListener('ux:map:marker:after-create', this._onMarkerAfterCreate.bind(this));
+    }
+
+    _onConnect(event) {
+        const { L, map } = event.detail;
+
+        this._map = map;
+        this._map.eachLayer(layer => {
+            if (layer.dragging) {
+                this._map.removeLayer(layer);
+            }
+        });
+
+        this._map.addLayer(this._cluster);
     }
 
     _onMarkerBeforeCreate(event) {
         const { definition, L } = event.detail;
 
-        const redIcon = L.icon({
-            // Note: instead of using an hardcoded URL, you can use the `extra` parameter from `new Marker()` (PHP) and access it here with `definition.extra`.
-            iconUrl: definition.extra.icon,
-            iconSize: [32, 32], // size of the icon
-            //shadowSize: [50, 64], // size of the shadow
-            //iconAnchor: [22, 94], // point of the icon which will correspond to marker's location
-            //shadowAnchor: [4, 62],  // the same for the shadow
-            //popupAnchor: [-3, -76] // point from which the popup should open relative to the iconAnchor
-        })
-
         definition.rawOptions = {
-            icon: redIcon,
-        }
+            icon: L.icon({
+                iconUrl: definition.extra.icon,
+                iconSize: [32, 32],
+                iconColor: 'blue'
+            }),
+        };
+    }
+
+    _onMarkerAfterCreate(event) {
+        const { marker, L } = event.detail;
+
+        this._cluster.addLayer(marker);
+
     }
 }
