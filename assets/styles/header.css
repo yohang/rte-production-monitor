@@ -1,0 +1,21 @@
+.Header {
+    height: var(--header-height);
+    display: flex;
+    align-items: center;
+    box-shadow: 0 -1.6em 2em 1em black;
+    position: relative;
+    z-index: var(--topbar-z-index);
+
+    .Header__homeLink {
+        display: flex;
+        align-items: center;
+        color: var(--main-color);
+        padding: 0 .5em;
+        text-decoration: none;
+        font-size: 1.25em;
+
+        svg {
+            font-size: 2em;
+        }
+    }
+}

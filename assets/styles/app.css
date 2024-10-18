@@ -1,6 +1,16 @@
+@import url(./utils.css);
+@import url(./header.css);
+
 :root {
-    --header-height: 3em;
-    --sidebar-width: 30em;
+    --header-height: 3rem;
+    --sidebar-width: 30rem;
+
+    --main-color: black;
+    --background-main-color: white;
+
+    --main-z-index: 10;
+    --topbar-z-index: 100;
+    --sidebar-z-index: 1100;
 }
 
 * > * {
@@ -11,26 +21,14 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
+    font-family: sans-serif;
 }
 
-.Header {
-    height: var(--header-height);
-}
+a {
+    transition: filter .5s ease;
 
-.DefinitionList {
-    &.DefinitionList--inline {
-        display: grid;
-        grid-template-columns: min-content 1fr;
-        column-gap: 1em;
-
-        & dt {
-            font-weight: bold;
-            white-space: nowrap;
-        }
-
-        & dd {
-            margin: 0;
-            padding: 0;
-        }
+    &:hover {
+        filter: invert(30%);
+        transition: filter .5s ease;
     }
 }

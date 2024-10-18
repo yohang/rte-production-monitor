@@ -2,10 +2,12 @@
     height: calc(100% - var(--header-height));
     display: grid;
     position: relative;
+    z-index: var(--main-z-index);
 
     .Homepage__sidebar {
         overflow-y: auto;
-        padding-inline: 2em;
+        padding-inline: 1em;
+        border-inline-end: .5em solid var(--background-main-color);
         width: var(--sidebar-width);
     }
 
@@ -18,7 +20,7 @@
     &.Homepage--sidebarOpen {
         .Homepage__mapContainer {
             inset-inline-start: var(--sidebar-width);
-            transition: 500ms;
+            transition: left 500ms ease;
         }
     }
 }

@@ -4,7 +4,13 @@
 
 {% block header_link_target ' data-turbo-frame="homepage-sidebar"' %}
 
+{% block title production_unit.name %}
+
 {% block homepage_sidebar %}
+    <a class="Sidebar__close" href="{{ path('homepage') }}">
+        {{ ux_icon('mdi:chevron-left') }}
+    </a>
+
     <ul class="SidebarList">
         {% for production_unit in production_unit.firstUnitOfGroup ? production_unit.siblings : [production_unit] %}
             <li class="SidebarList__item">

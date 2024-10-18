@@ -1,3 +1,43 @@
+.Homepage--sidebarOpen {
+    .Sidebar {
+        z-index: var(--sidebar-z-index);
+    }
+}
+
+.Sidebar {
+    position: relative;
+    box-shadow: 0 .5em .5em -.125em var(--main-color);
+
+    &::after {
+        content: '';
+        display: block;
+        position: fixed;
+        background: var(--background-main-color);
+        inset-block-start: calc(20vh - 0.5ch);
+        inset-inline-start: calc(var(--sidebar-width) - .25em);
+        font-size: 2.5em;
+        width: .25em;
+        height: 5ch;
+    }
+
+    .Sidebar__close {
+        position: fixed;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--main-color);
+        background: var(--background-main-color);
+        border-start-end-radius: .5em;
+        border-end-end-radius: .5em;
+        font-size: 2.5em;
+        height: 4ch;
+        width: 1.2em;
+        inset-block-start: 20vh;
+        inset-inline-start: var(--sidebar-width);
+        box-shadow: 0 0 .2em -.05em var(--main-color);
+    }
+}
+
 .SidebarList {
     list-style-type: none;
     margin: 0;

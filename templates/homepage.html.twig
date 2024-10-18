@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title '' %}
+{% block title 'Production électrique Française en temps réel' %}
 
 {% block header_link_target ' data-turbo-frame="homepage-sidebar"' %}
 
 {% block body %}
     <div class="{% block homepage_class 'Homepage' %}">
-        <turbo-frame class="Homepage__sidebar" id="homepage-sidebar" data-turbo-action="advance">
+        <turbo-frame class="Homepage__sidebar Sidebar" id="homepage-sidebar" data-turbo-action="advance">
             {% block homepage_sidebar '' %}
         </turbo-frame>
 
