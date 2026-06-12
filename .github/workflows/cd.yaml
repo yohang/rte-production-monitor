@@ -70,6 +70,7 @@ jobs:
             SCW_ACCESS_KEY: ${{ secrets.SCW_ACCESS_KEY }}
             SCW_SECRET_KEY: ${{ secrets.SCW_SECRET_KEY }}
             SCW_DEFAULT_ORGANIZATION_ID: ${{ secrets.SCW_DEFAULT_ORGANIZATION_ID }}
+            SCW_DEFAULT_PROJECT_ID: ${{ secrets.SCW_DEFAULT_PROJECT_ID }}
             TAILSCALE_OAUTH_CLIENT_ID: ${{ secrets.TS_OAUTH_CLIENT_ID }}
             TAILSCALE_OAUTH_CLIENT_SECRET: ${{ secrets.TS_OAUTH_SECRET }}
             NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
