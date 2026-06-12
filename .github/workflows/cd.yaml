@@ -60,7 +60,6 @@ jobs:
     provision-prod:
         name: Provision PROD
         runs-on: ubuntu-latest
-        needs: [ build ]
         if: github.event_name == 'release'
         permissions:
             contents: read
@@ -80,14 +79,14 @@ jobs:
             -   name: Install OpenTofu
                 uses: opentofu/setup-opentofu@v2
             -   name: Initialize OpenTofu
-                run: tofu -chdir .infra/terraform init
+                run: tofu -chdir=.infra/terraform init
             -   name: Apply Terraform plan
-                run: tofu -chdir .infra/terraform apply -auto-approve
+                run: tofu -chdir=.infra/terraform apply -auto-approve
 
     deploy-prod:
         name: Deploy to PROD
         runs-on: ubuntu-latest
-        needs: [ build ]
+        needs: [ build, provision-prod ]
         environment: PROD
         if: github.event_name == 'release'
         env:
