@@ -1,6 +1,6 @@
 services:
     php: &php
-        image: ${IMAGE_PREFIX:-ghcr.io/ygiarelli/rte-production-monitor/}app:${DOCKER_TAG:-latest}
+        image: ${IMAGE_PREFIX:-ghcr.io/yohang/rte-production-monitor/}app:${DOCKER_TAG:-latest}
         environment:
             SERVER_NAME: ${SERVER_NAME:-localhost}, php:80
             MESSENGER_TRANSPORT_DSN: doctrine://default?auto_setup=0
