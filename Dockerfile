@@ -30,8 +30,6 @@ RUN set -eux; \
     mkdir -p /var/run/php /app/var /var/www /data /config; \
     chown -R www-data:www-data /usr/local/etc/php /var/run/php /var/www /app /app/var /data /config
 
-VOLUME /app/config/secrets
-
 USER www-data
 
 ENV APP_ENV=prod

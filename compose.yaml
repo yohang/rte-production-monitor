@@ -20,8 +20,7 @@ services:
             context: .
             target: app
             args:
-                EXTERNAL_USER_ID: ${EXTERNAL_USER_ID}
-
+                EXTERNAL_USER_ID: ${EXTERNAL_USER_ID:-1000}
     scheduler:
         <<: *php
         command: 'php bin/console messenger:consume scheduler_recurrent --no-debug -vv'
