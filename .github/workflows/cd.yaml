@@ -70,6 +70,7 @@ jobs:
             SERVER_NAME: ${{ secrets.SERVER_NAME }}
             APP_VERSION: ${{ github.ref_name }}
             DATABASE_URL: ${{ secrets.DATABASE_URL }}
+            SYMFONY_DECRYPTION_SECRET: ${{ secrets.SYMFONY_DECRYPTION_SECRET }}
             EXTERNAL_USER_ID: 33
         steps:
             -   name: Checkout

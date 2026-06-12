@@ -7,6 +7,7 @@ services:
             MESSENGER_TRANSPORT_DSN: doctrine://default?auto_setup=0
             APP_SECRET: ${APP_SECRET:-!ChangeMe!}
             DATABASE_URL: '${DATABASE_URL:-postgresql://${DATABASE_USER:-electricity-prod}:${DATABASE_PASSWORD:-electricity-prod}@database:5432/${DATABASE_DB:-electricity-prod}}'
+            SYMFONY_DECRYPTION_SECRET: ${SYMFONY_DECRYPTION_SECRET:-}
         ports:
             -   target: 80
                 published: ${HTTP_PORT:-80}
