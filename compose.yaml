@@ -1,13 +1,22 @@
+x-base-php-config: &php
+    image: ${IMAGE_PREFIX:-ghcr.io/yohang/rte-production-monitor/}app:${DOCKER_TAG:-latest}
+    restart: unless-stopped
+    environment:
+        SERVER_NAME: ${SERVER_NAME:-localhost}, php:80
+        MESSENGER_TRANSPORT_DSN: doctrine://default?auto_setup=0
+        APP_SECRET: ${APP_SECRET:-!ChangeMe!}
+        DATABASE_URL: '${DATABASE_URL:-postgresql://${DATABASE_USER:-electricity-prod}:${DATABASE_PASSWORD:-electricity-prod}@database:5432/${DATABASE_DB:-electricity-prod}}'
+        SYMFONY_DECRYPTION_SECRET: ${SYMFONY_DECRYPTION_SECRET:-}
+    build:
+        context: .
+        target: app
+        args:
+            EXTERNAL_USER_ID: ${EXTERNAL_USER_ID}
+
+
 services:
-    php: &php
-        image: ${IMAGE_PREFIX:-ghcr.io/yohang/rte-production-monitor/}app:${DOCKER_TAG:-latest}
-        restart: unless-stopped
-        environment:
-            SERVER_NAME: ${SERVER_NAME:-localhost}, php:80
-            MESSENGER_TRANSPORT_DSN: doctrine://default?auto_setup=0
-            APP_SECRET: ${APP_SECRET:-!ChangeMe!}
-            DATABASE_URL: '${DATABASE_URL:-postgresql://${DATABASE_USER:-electricity-prod}:${DATABASE_PASSWORD:-electricity-prod}@database:5432/${DATABASE_DB:-electricity-prod}}'
-            SYMFONY_DECRYPTION_SECRET: ${SYMFONY_DECRYPTION_SECRET:-}
+    php:
+        <<: *php
         ports:
             -   target: 80
                 published: ${HTTP_PORT:-80}
@@ -18,11 +27,6 @@ services:
             -   target: 443
                 published: ${HTTP3_PORT:-443}
                 protocol: udp
-        build:
-            context: .
-            target: app
-            args:
-                EXTERNAL_USER_ID: ${EXTERNAL_USER_ID}
 
     scheduler:
         <<: *php
