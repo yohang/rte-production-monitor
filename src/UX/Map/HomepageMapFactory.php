@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace App\UX\Map;
 
+use App\Entity\ProductionUnit;
+use App\Repository\ProductionUnitValuesRepository;
 use App\Repository\ProductionUnitRepository;
+use App\Repository\ProductionValueRepository;
 use Symfony\Component\Asset\Packages;
 use Symfony\UX\Map\Bridge\Leaflet\LeafletOptions;
 use Symfony\UX\Map\Bridge\Leaflet\Option\TileLayer;
@@ -18,6 +21,8 @@ final readonly class HomepageMapFactory
 {
     public function __construct(
         private ProductionUnitRepository $productionUnitRepository,
+        private ProductionValueRepository $productionValueRepository,
+        private ProductionUnitValuesRepository $productionUnitValuesRepository,
         private Environment $twig,
         private Packages $packages,
     ) {
@@ -35,16 +40,36 @@ final readonly class HomepageMapFactory
                 ))
             );
 
-        foreach ($this->productionUnitRepository->findHavingLatitudeAndLongitude() as $productionUnit) {
-            /*
-             * @psalm-suppress PossiblyNullArgument
-             */
+        $displayedProductionUnits = array_values(array_filter(
+            $this->productionUnitRepository->findHavingLatitudeAndLongitude(),
+            static function (ProductionUnit $productionUnit): bool {
+                $firstUnitOfGroup = $productionUnit->getFirstUnitOfGroup();
 
-            if (
-                null !== $productionUnit->getFirstUnitOfGroup()
-                && !$productionUnit->equals($productionUnit->getFirstUnitOfGroup())
-            ) {
-                continue;
+                return null === $firstUnitOfGroup || $productionUnit->equals($firstUnitOfGroup);
+            },
+        ));
+
+        $groupMembersByFirstUnitId = $this->getGroupMembersByFirstUnitId($displayedProductionUnits);
+        $allRelatedProductionUnits = $this->getAllRelatedProductionUnits($displayedProductionUnits, $groupMembersByFirstUnitId);
+        $lastProductionValuesByUnitId = $this->productionValueRepository->findLastValuesForProductionUnits($allRelatedProductionUnits);
+        $installedCapacitiesByUnitId = $this->productionUnitValuesRepository->findInstalledCapacitiesForProductionUnits($allRelatedProductionUnits);
+        $latestTypesByUnitId = $this->productionUnitValuesRepository->findLatestTypesForProductionUnits($allRelatedProductionUnits);
+
+        foreach ($displayedProductionUnits as $productionUnit) {
+            $productionUnitId = $productionUnit->getId()->toRfc4122();
+            $groupMembers = $groupMembersByFirstUnitId[$productionUnitId] ?? [$productionUnit];
+            $iconIdentifier = 'mdi/electricity';
+            $production = .0;
+            $capacity = .0;
+
+            foreach ($groupMembers as $groupMember) {
+                $groupMemberId = $groupMember->getId()->toRfc4122();
+                $production += $lastProductionValuesByUnitId[$groupMemberId] ?? .0;
+                $capacity += $installedCapacitiesByUnitId[$groupMemberId] ?? .0;
+
+                if ('mdi/electricity' === $iconIdentifier && isset($latestTypesByUnitId[$groupMemberId])) {
+                    $iconIdentifier = $latestTypesByUnitId[$groupMemberId]?->getIconIdentifier() ?? $iconIdentifier;
+                }
             }
 
             $map
@@ -56,12 +81,16 @@ final readonly class HomepageMapFactory
                             $productionUnit->getCanonicalName(),
                             $this->twig->render(
                                 'production_unit/_info_window.html.twig',
-                                ['production_unit' => $productionUnit],
+                                [
+                                    'capacity' => $capacity,
+                                    'production' => $production,
+                                    'production_unit' => $productionUnit,
+                                ],
                             ),
                         ),
                         [
                             'icon' => $this->packages->getUrl(
-                                'icons/'.$productionUnit->getValues()[0]->getType()->getIconIdentifier().'.svg'
+                                'icons/'.$iconIdentifier.'.svg'
                             ),
                         ]
                     ),
@@ -69,5 +98,60 @@ final readonly class HomepageMapFactory
         }
 
         return $map;
+    }
+
+    /**
+     * @param array<int, ProductionUnit> $displayedProductionUnits
+     *
+     * @return array<string, array<string, ProductionUnit>>
+     */
+    private function getGroupMembersByFirstUnitId(array $displayedProductionUnits): array
+    {
+        $groupedProductionUnits = $this->productionUnitRepository->findByFirstUnitsOfGroup(array_values(array_filter(
+            $displayedProductionUnits,
+            static fn (ProductionUnit $productionUnit): bool => null !== $productionUnit->getFirstUnitOfGroup(),
+        )));
+
+        $groupMembersByFirstUnitId = [];
+
+        foreach ($displayedProductionUnits as $displayedProductionUnit) {
+            $groupMembersByFirstUnitId[$displayedProductionUnit->getId()->toRfc4122()] = [
+                $displayedProductionUnit->getId()->toRfc4122() => $displayedProductionUnit,
+            ];
+        }
+
+        foreach ($groupedProductionUnits as $groupedProductionUnit) {
+            $firstUnitOfGroup = $groupedProductionUnit->getFirstUnitOfGroup();
+            if (null === $firstUnitOfGroup) {
+                continue;
+            }
+
+            $groupMembersByFirstUnitId[$firstUnitOfGroup->getId()->toRfc4122()][$groupedProductionUnit->getId()->toRfc4122()] = $groupedProductionUnit;
+        }
+
+        return $groupMembersByFirstUnitId;
+    }
+
+    /**
+     * @param array<int, ProductionUnit> $displayedProductionUnits
+     * @param array<string, array<string, ProductionUnit>> $groupMembersByFirstUnitId
+     *
+     * @return array<int, ProductionUnit>
+     */
+    private function getAllRelatedProductionUnits(array $displayedProductionUnits, array $groupMembersByFirstUnitId): array
+    {
+        $allRelatedProductionUnitsById = [];
+
+        foreach ($displayedProductionUnits as $displayedProductionUnit) {
+            $allRelatedProductionUnitsById[$displayedProductionUnit->getId()->toRfc4122()] = $displayedProductionUnit;
+        }
+
+        foreach ($groupMembersByFirstUnitId as $groupMembers) {
+            foreach ($groupMembers as $groupMemberId => $groupMember) {
+                $allRelatedProductionUnitsById[$groupMemberId] = $groupMember;
+            }
+        }
+
+        return array_values($allRelatedProductionUnitsById);
     }
 }

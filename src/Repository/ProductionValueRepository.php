@@ -72,6 +72,44 @@ class ProductionValueRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * @param array<int, ProductionUnit> $productionUnits
+     *
+     * @return array<string, float>
+     */
+    public function findLastValuesForProductionUnits(array $productionUnits): array
+    {
+        if ([] === $productionUnits) {
+            return [];
+        }
+
+        $rows = $this->createQueryBuilder('pv')
+            ->select('IDENTITY(psu.productionUnit) as productionUnitId')
+            ->addSelect('SUM(pv.value) as value')
+            ->innerJoin('pv.productionSubUnit', 'psu')
+            ->andWhere('psu.productionUnit IN (:productionUnits)')
+            ->andWhere(
+                'pv.startDate = (
+                    SELECT MAX(pv2.startDate)
+                    FROM App\\Entity\\ProductionValue pv2
+                    INNER JOIN pv2.productionSubUnit psu2
+                    WHERE psu2.productionUnit = psu.productionUnit
+                )'
+            )
+            ->groupBy('psu.productionUnit')
+            ->setParameter('productionUnits', $productionUnits)
+            ->getQuery()
+            ->getArrayResult();
+
+        $valuesByUnitId = [];
+
+        foreach ($rows as $row) {
+            $valuesByUnitId[$row['productionUnitId']] = (float) $row['value'];
+        }
+
+        return $valuesByUnitId;
+    }
+
     public function save(ProductionValue $productionValue): void
     {
         $this->getEntityManager()->persist($productionValue);

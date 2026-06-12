@@ -53,8 +53,31 @@ final class ProductionUnitRepository extends ServiceEntityRepository
     public function findHavingLatitudeAndLongitude(): array
     {
         return $this->createQueryBuilder('pu')
+            ->leftJoin('pu.firstUnitOfGroup', 'fug')
+            ->addSelect('fug')
             ->where('pu.latitude IS NOT NULL')
             ->andWhere('pu.longitude IS NOT NULL')
+            ->orderBy('pu.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param array<int, ProductionUnit> $firstUnitsOfGroup
+     *
+     * @return array<int, ProductionUnit>
+     */
+    public function findByFirstUnitsOfGroup(array $firstUnitsOfGroup): array
+    {
+        if ([] === $firstUnitsOfGroup) {
+            return [];
+        }
+
+        return $this->createQueryBuilder('pu')
+            ->leftJoin('pu.firstUnitOfGroup', 'fug')
+            ->addSelect('fug')
+            ->where('pu.firstUnitOfGroup IN (:firstUnitsOfGroup)')
+            ->setParameter('firstUnitsOfGroup', $firstUnitsOfGroup)
             ->orderBy('pu.name', 'ASC')
             ->getQuery()
             ->getResult();
