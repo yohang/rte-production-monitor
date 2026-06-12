@@ -12,3 +12,6 @@ indent_brace_style = K&R
 
 [Makefile]
 indent_style = tab
+
+[*.tf]
+indent_size = 2
