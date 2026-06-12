@@ -1,29 +1,34 @@
-ARG PHP_VERSION=8.3
-ARG FRANKENPHP_VERSION=1.2
-ARG ALPINE_VERSION=3.20
+ARG PHP_VERSION=8.5
+ARG FRANKENPHP_VERSION=1.12
+ARG DEBIAN_VERSION=trixie
 
-FROM dunglas/frankenphp:${FRANKENPHP_VERSION}-php${PHP_VERSION}-alpine AS app
+FROM dunglas/frankenphp:${FRANKENPHP_VERSION}-php${PHP_VERSION}-${DEBIAN_VERSION} AS app
 
-ARG EXTERNAL_USER_ID=1000
+
+LABEL org.opencontainers.image.source=https://github.com/yohang/rte-production-monitor
+LABEL org.opencontainers.image.licenses=GPL-3.0-or-later
+LABEL org.opencontainers.image.authors="Yohan Giarelli <yohan@giarel.li>"
+LABEL org.opencontainers.image.description="A Symfony application to monitor the production environment of RTE, the French electricity transmission system operator."
+
+SHELL ["/bin/bash", "-euxo", "pipefail", "-c"]
+
+ARG EXTERNAL_USER_ID
 
 RUN set -eux; \
-    apk add --no-cache sqlite; \
-    install-php-extensions zip pdo_pgsql pcntl opcache intl mbstring apcu; \
+    install-php-extensions @composer zip pdo_pgsql pcntl opcache intl mbstring apcu; \
     sync
 
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-COPY --chown=www-data:www-data infra/docker/php/Caddyfile /etc/caddy/Caddyfile
-COPY --chown=www-data:www-data infra/docker/php/docker-entrypoint /usr/local/bin/docker-entrypoint
+COPY --chown=www-data:www-data .infra/docker/php/Caddyfile /etc/caddy/Caddyfile
+COPY --chown=www-data:www-data .infra/docker/php/docker-entrypoint /usr/local/bin/docker-entrypoint
 
 RUN chmod a+x /usr/local/bin/docker-entrypoint
 
 RUN set -eux; \
-    echo "Setting User id (external): ${EXTERNAL_USER_ID}"; \
     sed -i -r s/"(www-data:x:)([[:digit:]]+):([[:digit:]]+):"/\\1${EXTERNAL_USER_ID}:${EXTERNAL_USER_ID}:/g /etc/passwd; \
     sed -i -r s/"(www-data:x:)([[:digit:]]+):"/\\1${EXTERNAL_USER_ID}:/g /etc/group; \
-    mkdir -p /var/run/php /app/config/secrets; \
-    chown -R www-data:www-data /app /var/www /usr/local/etc/php /var/run/php /home/www-data /config /data /app/config
+    mkdir -p /var/run/php /app/var /var/www /data /config; \
+    chown -R www-data:www-data /usr/local/etc/php /var/run/php /var/www /app /app/var /data /config
 
 VOLUME /app/config/secrets
 
@@ -40,6 +45,8 @@ RUN set -eux; \
     composer clear-cache; \
     mkdir -p var assets/vendor
 
+
+COPY --chown=www-data:www-data assets assets/
 COPY --chown=www-data:www-data bin bin/
 COPY --chown=www-data:www-data config config/
 COPY --chown=www-data:www-data migrations migrations/
@@ -49,7 +56,6 @@ COPY --chown=www-data:www-data templates templates/
 COPY --chown=www-data:www-data translations translations/
 COPY --chown=www-data:www-data importmap.php ./importmap.php
 
-COPY assets assets/
 
 RUN set -eux; \
     mkdir -p var/cache var/log; \

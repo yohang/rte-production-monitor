@@ -3,7 +3,6 @@
 /.env.local
 /.env.local.php
 /.env.*.local
-/config/secrets/*
 /public/bundles/
 /var/
 /vendor/
@@ -25,4 +24,5 @@
 ###< symfony/asset-mapper ###
 
 .configured
-infra/docker/tls/
+.infra/docker/tls/
+config/secrets/*/*.private.php

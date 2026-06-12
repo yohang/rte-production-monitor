@@ -1,28 +1,35 @@
 services:
     php:
-        ports:
-            -   target: 80
-                published: ${HTTP_PORT:-80}
-                protocol: tcp
-            -   target: 443
-                published: ${HTTPS_PORT:-443}
-                protocol: tcp
-            -   target: 443
-                published: ${HTTP3_PORT:-443}
-                protocol: udp
+        depends_on: [ database ]
         environment:
             APP_ENV: dev
             APP_DEBUG: true
-            CADDY_SERVER_EXTRA_DIRECTIVES: 'tls /app/infra/docker/tls/cert.pem /app/infra/docker/tls/cert.key'
+            CADDY_SERVER_EXTRA_DIRECTIVES: 'tls /app/.infra/docker/tls/cert.pem /app/.infra/docker/tls/cert.key'
             SERVER_NAME: localhost:443
         command: [ 'frankenphp', 'run', '--config', '/etc/caddy/Caddyfile', '--watch' ]
         volumes:
             - '.:/app:rw'
-            - './config/secrets:/app/config/secrets:rw'
-            - './infra/docker/php/conf.d/symfony.dev.ini:/usr/local/etc/php/conf.d/symfony.ini:ro'
+            - './.infra/docker/php/conf.d/symfony.dev.ini:/usr/local/etc/php/conf.d/symfony.ini:ro'
 
     scheduler:
         profiles: [ 'do-no-start' ]
 
     database:
-        ports: [ '5432:5432' ]
+        image: postgres:18-trixie
+        volumes: [ 'database-data:/var/lib/postgresql' ]
+        ports:
+            -   target: 5432
+                published: ${DATABASE_PORT:-5432}
+                protocol: tcp
+        healthcheck:
+            test: [ "CMD", "pg_isready", "-d", "${POSTGRES_DB:-app}", "-U", "${POSTGRES_USER:-app}" ]
+            timeout: 5s
+            retries: 5
+            start_period: 60s
+        environment:
+            - POSTGRES_DB=${DATABASE_DB:-electricity-prod}
+            - POSTGRES_USER=${DATABASE_USER:-electricity-prod}
+            - POSTGRES_PASSWORD=${DATABASE_PASSWORD:-electricity-prod}
+
+volumes:
+    database-data: ~

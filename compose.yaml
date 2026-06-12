@@ -1,36 +1,27 @@
 services:
     php: &php
-        image:      ygiarelli/rte-production-monitor:${DOCKER_TAG:-latest}
-        networks:   [ electricity-prod ]
-        depends_on: [ database ]
+        image: ${IMAGE_PREFIX:-ghcr.io/ygiarelli/rte-production-monitor/}app:${DOCKER_TAG:-latest}
         environment:
+            SERVER_NAME: ${SERVER_NAME:-localhost}, php:80
             MESSENGER_TRANSPORT_DSN: doctrine://default?auto_setup=0
             APP_SECRET: ${APP_SECRET:-!ChangeMe!}
-            DATABASE_URL: 'postgresql://${DATABASE_USER:-electricity-prod}:${DATABASE_PASSWORD:-electricity-prod}@database:5432/${DATABASE_DB:-electricity-prod}'
+            DATABASE_URL: '${DATABASE_URL:-postgresql://${DATABASE_USER:-electricity-prod}:${DATABASE_PASSWORD:-electricity-prod}@database:5432/${DATABASE_DB:-electricity-prod}}'
+        ports:
+            -   target: 80
+                published: ${HTTP_PORT:-80}
+                protocol: tcp
+            -   target: 443
+                published: ${HTTPS_PORT:-443}
+                protocol: tcp
+            -   target: 443
+                published: ${HTTP3_PORT:-443}
+                protocol: udp
         build:
             context: .
             target: app
             args:
-                EXTERNAL_USER_ID: ${EXTERNAL_USER_ID-1000}
-            cache_from:
-                - ygiarelli/rte-production-monitor:latest
-                - ygiarelli/rte-production-monitor:${DOCKER_TAG:-latest}
+                EXTERNAL_USER_ID: ${EXTERNAL_USER_ID}
 
     scheduler:
         <<: *php
         command: 'php bin/console messenger:consume scheduler_recurrent --no-debug -vv'
-
-    database:
-        image: postgres:16-alpine3.20
-        volumes: [ 'database-data:/var/lib/postgresql/data' ]
-        networks: [ electricity-prod ]
-        environment:
-            - POSTGRES_DB=${DATABASE_DB:-electricity-prod}
-            - POSTGRES_USER=${DATABASE_USER:-electricity-prod}
-            - POSTGRES_PASSWORD=${DATABASE_PASSWORD:-electricity-prod}
-
-volumes:
-    database-data: ~
-
-networks:
-    electricity-prod: ~
