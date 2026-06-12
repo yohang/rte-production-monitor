@@ -69,6 +69,7 @@ jobs:
             APP_SECRET: ${{ secrets.APP_SECRET }}
             SERVER_NAME: ${{ secrets.SERVER_NAME }}
             APP_VERSION: ${{ github.ref_name }}
+            DATABASE_URL: ${{ secrets.DATABASE_URL }}
             EXTERNAL_USER_ID: 33
         steps:
             -   name: Checkout
