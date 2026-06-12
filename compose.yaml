@@ -1,6 +1,7 @@
 services:
     php: &php
         image: ${IMAGE_PREFIX:-ghcr.io/yohang/rte-production-monitor/}app:${DOCKER_TAG:-latest}
+        restart: unless-stopped
         environment:
             SERVER_NAME: ${SERVER_NAME:-localhost}, php:80
             MESSENGER_TRANSPORT_DSN: doctrine://default?auto_setup=0
@@ -25,3 +26,7 @@ services:
     scheduler:
         <<: *php
         command: 'php bin/console messenger:consume scheduler_recurrent --no-debug -vv'
+
+networks:
+    default:
+        enable_ipv6: true
