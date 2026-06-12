@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Entity;
@@ -82,12 +83,12 @@ class ProductionUnit implements HasTimestamp, Equatable
 
     public function __construct(string $eicCode, string $name)
     {
-        $this->id       = Uuid::v6();
-        $this->eicCode  = $eicCode;
-        $this->name     = $name;
-        $this->subUnits = new ArrayCollection;
-        $this->values   = new ArrayCollection;
-        $this->siblings = new ArrayCollection;
+        $this->id = Uuid::v6();
+        $this->eicCode = $eicCode;
+        $this->name = $name;
+        $this->subUnits = new ArrayCollection();
+        $this->values = new ArrayCollection();
+        $this->siblings = new ArrayCollection();
 
         $this->initialize();
     }

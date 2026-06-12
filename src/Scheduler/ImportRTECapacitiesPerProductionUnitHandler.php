@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Scheduler;
@@ -13,10 +14,9 @@ final readonly class ImportRTECapacitiesPerProductionUnitHandler
 {
     public function __construct(
         private RTECapacitiesPerProductionUnitImporter $importer,
-        private LoggerInterface                        $logger,
-        private Stopwatch                              $stopwatch = new Stopwatch,
-    )
-    {
+        private LoggerInterface $logger,
+        private Stopwatch $stopwatch = new Stopwatch(),
+    ) {
     }
 
     public function __invoke(ImportRTEActualGenerations $message): void

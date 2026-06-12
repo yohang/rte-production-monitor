@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Controller\ProductionUnit;
@@ -17,17 +18,15 @@ final readonly class Show
 {
     public function __construct(
         private HomepageMapFactory $homepageMapFactory,
-    )
-    {
+    ) {
     }
 
     public function __invoke(
         #[MapEntity(ProductionUnit::class, mapping: ['eicCode' => 'eicCode'])] ProductionUnit $productionUnit,
-    ): array
-    {
+    ): array {
         return [
             'production_unit' => $productionUnit,
-            'map'             => $this->homepageMapFactory->create(),
+            'map' => $this->homepageMapFactory->create(),
         ];
     }
 }

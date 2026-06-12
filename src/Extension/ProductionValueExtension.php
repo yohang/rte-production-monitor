@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Extension;
@@ -12,8 +13,7 @@ final class ProductionValueExtension extends AbstractExtension
 {
     public function __construct(
         private readonly ProductionValueRepository $productionValueRepository,
-    )
-    {
+    ) {
     }
 
     /**

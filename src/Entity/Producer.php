@@ -1,10 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Bridge\RTE\Model\ProductionUnit as RTEProductionUnit;
 use App\Behavior\Impl\TimestampImpl;
+use App\Bridge\RTE\Model\ProductionUnit as RTEProductionUnit;
 use App\Repository\ProducerRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Column;
@@ -36,9 +37,9 @@ class Producer
 
     public function __construct(string $eicCode, string $name)
     {
-        $this->id      = Uuid::v6();
+        $this->id = Uuid::v6();
         $this->eicCode = $eicCode;
-        $this->name    = $name;
+        $this->name = $name;
 
         $this->initialize();
     }

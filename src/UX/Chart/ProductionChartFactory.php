@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\UX\Chart;
@@ -13,10 +14,8 @@ final readonly class ProductionChartFactory
     public function __construct(
         private ProductionValueRepository $productionValueRepository,
         private ChartBuilderInterface $chartBuilder,
-    )
-    {
+    ) {
     }
-
 
     public function create(ProductionUnit $productionUnit): Chart
     {
@@ -28,11 +27,11 @@ final readonly class ProductionChartFactory
 
         $chart = $this->chartBuilder->createChart(Chart::TYPE_LINE);
         $chart->setData([
-            'labels'   => array_map(fn (array $value): string => $value['startDate']->format('H:i'), $dataset),
+            'labels' => array_map(fn (array $value): string => $value['startDate']->format('H:i'), $dataset),
             'datasets' => [
                 [
                     'label' => 'Production',
-                    'data'  => array_column($dataset, 'value'),
+                    'data' => array_column($dataset, 'value'),
                     'borderColor' => 'blue',
                     'tension' => 0.4,
                 ],

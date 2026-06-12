@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Bridge\RTE\Model;
@@ -12,7 +13,6 @@ final readonly class ActualGenerationPerUnitValues
         #[SerializedName('end_date')] public \DateTimeImmutable $endDate,
         #[SerializedName('updated_date')] public \DateTimeImmutable $updatedDate,
         #[SerializedName('value')] public int $value,
-    )
-    {
+    ) {
     }
 }

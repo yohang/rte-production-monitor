@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Importer;
@@ -13,7 +14,7 @@ final class ImportState
 
     public function processRow(): void
     {
-        $this->rowsProcessed++;
+        ++$this->rowsProcessed;
     }
 
     public function isFinished(): bool

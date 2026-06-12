@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Entity;
@@ -48,10 +49,10 @@ class ProductionValue implements HasTimestamp
 
     public function __construct(ProductionSubUnit $productionSubUnit, \DateTimeImmutable $startDate, int $value)
     {
-        $this->id                = Uuid::v6();
+        $this->id = Uuid::v6();
         $this->productionSubUnit = $productionSubUnit;
-        $this->startDate         = $startDate;
-        $this->value             = $value;
+        $this->startDate = $startDate;
+        $this->value = $value;
 
         $this->initialize();
     }

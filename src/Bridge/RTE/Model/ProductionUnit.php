@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Bridge\RTE\Model;
@@ -13,7 +14,6 @@ final readonly class ProductionUnit
         #[SerializedName('location')] public string $location,
         #[SerializedName('code_eic_producteur')] public ?string $producerEicCode,
         #[SerializedName('name_producteur')] public ?string $producerName,
-    )
-    {
+    ) {
     }
 }

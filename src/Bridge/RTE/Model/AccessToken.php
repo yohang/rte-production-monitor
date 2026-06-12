@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Bridge\RTE\Model;
@@ -19,9 +20,8 @@ final readonly class AccessToken
     public function __construct(
         string $accessToken,
         string $tokenType,
-        int $expiresIn
-    )
-    {
+        int $expiresIn,
+    ) {
         $this->accessToken = $accessToken;
         $this->tokenType = $tokenType;
         $this->expiresIn = $expiresIn;

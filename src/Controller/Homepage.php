@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Controller;
@@ -15,8 +16,7 @@ final readonly class Homepage
 {
     public function __construct(
         private HomepageMapFactory $homepageMapFactory,
-    )
-    {
+    ) {
     }
 
     public function __invoke(): array

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Importer;
@@ -8,7 +9,6 @@ use App\Entity\ProductionUnit;
 use App\Entity\ProductionValue;
 use App\Repository\ProductionUnitRepository;
 use App\Repository\ProductionValueRepository;
-use Doctrine\Bundle\DoctrineBundle\Middleware\DebugMiddleware;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NoResultException;
 use Psr\Log\LoggerInterface;
@@ -17,14 +17,13 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 final readonly class RTEActualGenerationsImporter
 {
     public function __construct(
-        private RTEClient                       $rteClient,
-        private ProductionUnitRepository        $productionUnitRepository,
-        private ProductionValueRepository       $productionValueRepository,
-        private EntityManagerInterface          $entityManager,
-        private LoggerInterface                 $logger,
+        private RTEClient $rteClient,
+        private ProductionUnitRepository $productionUnitRepository,
+        private ProductionValueRepository $productionValueRepository,
+        private EntityManagerInterface $entityManager,
+        private LoggerInterface $logger,
         #[Autowire('%kernel.debug%')] private bool $debug,
-    )
-    {
+    ) {
     }
 
     /**

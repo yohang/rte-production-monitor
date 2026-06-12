@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Bridge\RTE\Model;
@@ -14,7 +15,6 @@ final readonly class CapacityPerProductionUnitValues
         #[SerializedName('voltage_level_connection')] public float $voltageLevelConnection,
         #[SerializedName('type')] public ?ProductionType $type,
         #[SerializedName('updated_date')] public ?\DateTimeImmutable $updatedDate,
-    )
-    {
+    ) {
     }
 }

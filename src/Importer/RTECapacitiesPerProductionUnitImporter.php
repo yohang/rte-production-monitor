@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Importer;
@@ -20,14 +21,13 @@ use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 final readonly class RTECapacitiesPerProductionUnitImporter
 {
     public function __construct(
-        private RTEClient                      $rteClient,
-        private ProductionUnitRepository       $productionUnitRepository,
-        private ProducerRepository             $producerRepository,
+        private RTEClient $rteClient,
+        private ProductionUnitRepository $productionUnitRepository,
+        private ProducerRepository $producerRepository,
         private ProductionUnitValuesRepository $productionUnitValues,
-        private ProductionSubUnitRepository    $productionSubUnitRepository,
-        private LoggerInterface                $logger,
-    )
-    {
+        private ProductionSubUnitRepository $productionSubUnitRepository,
+        private LoggerInterface $logger,
+    ) {
     }
 
     /**
@@ -36,7 +36,7 @@ final readonly class RTECapacitiesPerProductionUnitImporter
     public function import(): \Generator
     {
         $capacitiesPerProductionUnit = $this->rteClient->fetchInstalledCapacities();
-        $importState                 = new ImportState(count($capacitiesPerProductionUnit->capacitiesPerProductionUnit));
+        $importState = new ImportState(count($capacitiesPerProductionUnit->capacitiesPerProductionUnit));
 
         yield $importState;
 

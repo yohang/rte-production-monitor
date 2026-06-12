@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Command;
@@ -19,8 +20,7 @@ final class ReconciliateMultipleProductionUnitsCommand extends Command
 {
     public function __construct(
         private readonly ProductionUnitRepository $productionUnitRepository,
-    )
-    {
+    ) {
         parent::__construct();
     }
 
@@ -32,7 +32,6 @@ final class ReconciliateMultipleProductionUnitsCommand extends Command
         $i = 0;
         foreach ($finishingByNumber as $productionUnit) {
             /** @var ProductionUnit $productionUnit */
-
             if (null !== $productionUnit->getFirstUnitOfGroup()) {
                 continue;
             }
@@ -43,10 +42,10 @@ final class ReconciliateMultipleProductionUnitsCommand extends Command
                 $this->productionUnitRepository->save($otherProductionUnit);
             }
 
-            $i++;
+            ++$i;
         }
 
-        $io->success('Processed ' . $i . ' production units groups');
+        $io->success('Processed '.$i.' production units groups');
 
         return self::SUCCESS;
     }

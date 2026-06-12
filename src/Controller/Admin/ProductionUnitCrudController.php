@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Controller\Admin;
@@ -23,7 +24,7 @@ final class ProductionUnitCrudController extends AbstractCrudController
         yield TextField::new('location');
 
         $subUnitsField = CollectionField::new('subUnits');
-        $valuesField   = CollectionField::new('values');
+        $valuesField = CollectionField::new('values');
 
         if (Crud::PAGE_DETAIL === $pageName) {
             $subUnitsField->setTemplatePath('admin/production_unit/sub_units.html.twig');

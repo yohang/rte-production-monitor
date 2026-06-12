@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Repository;
@@ -73,7 +74,7 @@ final class ProductionUnitRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('pu')
             ->where('pu.name LIKE :name')
             ->orderBy('pu.name', 'ASC')
-            ->setParameter('name', $prefix . ' %')
+            ->setParameter('name', $prefix.' %')
             ->getQuery()
             ->getResult();
     }

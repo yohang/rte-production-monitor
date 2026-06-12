@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Extension;
@@ -13,8 +14,7 @@ final class ChartExtension extends AbstractExtension
 {
     public function __construct(
         private ProductionChartFactory $productionChartFactory,
-    )
-    {
+    ) {
     }
 
     public function getFunctions(): array

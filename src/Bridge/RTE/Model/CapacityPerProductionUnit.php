@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Bridge\RTE\Model;
@@ -12,7 +13,6 @@ final readonly class CapacityPerProductionUnit
         #[SerializedName('end_date')] public \DateTimeImmutable $endDate,
         #[SerializedName('production_unit')] public ProductionUnit $productionUnit,
         /** @var CapacityPerProductionUnitValues[] */ public array $values,
-    )
-    {
+    ) {
     }
 }

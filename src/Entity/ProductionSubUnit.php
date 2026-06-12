@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Entity;
@@ -45,10 +46,10 @@ class ProductionSubUnit implements HasTimestamp
 
     public function __construct(ProductionUnit $productionUnit, string $eicCode, string $name)
     {
-        $this->id             = Uuid::v6();
+        $this->id = Uuid::v6();
         $this->productionUnit = $productionUnit;
-        $this->eicCode        = $eicCode;
-        $this->name           = $name;
+        $this->eicCode = $eicCode;
+        $this->name = $name;
 
         $this->initialize();
     }

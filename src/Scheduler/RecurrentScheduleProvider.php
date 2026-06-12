@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Scheduler;
@@ -13,9 +14,9 @@ final readonly class RecurrentScheduleProvider implements ScheduleProviderInterf
 {
     public function getSchedule(): Schedule
     {
-        return (new Schedule)->with(
-            RecurringMessage::cron('5 * * * *', new ImportRTEActualGenerations, new \DateTimeZone('Europe/Paris')),
-            RecurringMessage::cron('0 2 * * *', new ImportRTECapacitiesPerProductionUnit, new \DateTimeZone('Europe/Paris')),
+        return (new Schedule())->with(
+            RecurringMessage::cron('5 * * * *', new ImportRTEActualGenerations(), new \DateTimeZone('Europe/Paris')),
+            RecurringMessage::cron('0 2 * * *', new ImportRTECapacitiesPerProductionUnit(), new \DateTimeZone('Europe/Paris')),
         );
     }
 }

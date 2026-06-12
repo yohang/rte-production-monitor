@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Command;
@@ -24,9 +25,8 @@ final class ImportPowerPlantInformationsFromOPSDCommand extends Command
 {
     public function __construct(
         private readonly ProductionUnitRepository $productionUnitRepository,
-        private readonly ManagerRegistry          $managerRegistry,
-    )
-    {
+        private readonly ManagerRegistry $managerRegistry,
+    ) {
         parent::__construct();
     }
 
@@ -45,16 +45,16 @@ final class ImportPowerPlantInformationsFromOPSDCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        $client   = HttpClient::create();
+        $client = HttpClient::create();
         /** @var StreamableInterface&ResponseInterface $response */
         $response = $client->request('GET', $input->getArgument('csv'));
-        $stream   = $response->toStream();
+        $stream = $response->toStream();
 
         $headerLine = fgetcsv($stream);
         while (($data = fgetcsv($stream)) !== false) {
-            $latitude  = $data[array_search('lat', $headerLine)];
+            $latitude = $data[array_search('lat', $headerLine)];
             $longitude = $data[array_search('lon', $headerLine)];
-            $eicCode   = $data[array_search('eic_code', $headerLine)];
+            $eicCode = $data[array_search('eic_code', $headerLine)];
 
             if (null === $eicCode) {
                 continue;
@@ -65,8 +65,8 @@ final class ImportPowerPlantInformationsFromOPSDCommand extends Command
                 $io->info(sprintf('Updating %s', $productionUnit->getName()));
 
                 if (null !== $latitude && null !== $longitude) {
-                    $productionUnit->setLatitude((float)$latitude);
-                    $productionUnit->setLongitude((float)$longitude);
+                    $productionUnit->setLatitude((float) $latitude);
+                    $productionUnit->setLongitude((float) $longitude);
                 }
 
                 $this->productionUnitRepository->save($productionUnit);
@@ -75,7 +75,6 @@ final class ImportPowerPlantInformationsFromOPSDCommand extends Command
                 continue;
             }
         }
-
 
         return Command::SUCCESS;
     }

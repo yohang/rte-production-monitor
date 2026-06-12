@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Controller\Admin;
@@ -42,6 +43,5 @@ final class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Unité de production', 'fas fa-list', ProductionUnit::class);
 
         yield MenuItem::section('Production');
-
     }
 }
