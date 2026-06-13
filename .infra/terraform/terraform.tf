@@ -35,7 +35,6 @@ terraform {
   backend "s3" {
     bucket  = "yohang-terraform-state"
     key     = "rte-production-monitor/terraform.tfstate"
-    profile = "scaleway"
     region  = "fr-par"
     endpoints = {
       s3 = "https://s3.fr-par.scw.cloud"

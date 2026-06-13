@@ -3,8 +3,8 @@ resource "scaleway_account_project" "rte_production_monitor" {
 }
 
 provider "scaleway" {
-  zone   = "pl-waw-2"
-  region = "pl-waw"
+  zone   = "nl-ams-1"
+  region = "nl-ams"
 }
 
 resource "scaleway_instance_ip" "v6" {
