@@ -26,7 +26,7 @@ resource "github_actions_environment_secret" "ssh_host" {
   repository  = "rte-production-monitor"
   environment = github_repository_environment.deploy.environment
   secret_name = "SSH_HOST"
-  value       = scaleway_instance_ip.v6.address
+  value       = "rte-production-monitor"
 }
 
 resource "github_actions_environment_secret" "ssh_user" {
