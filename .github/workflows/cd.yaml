@@ -94,8 +94,8 @@ jobs:
             DOCKER_HOST: 'ssh://${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}'
             APP_ENV: ${{ vars.APP_ENV }}
             APP_SECRET: ${{ secrets.APP_SECRET }}
-            SSH_USER: ${{ vars.SSH_USER }}
-            SSH_HOST: ${{ vars.SSH_HOST }}
+            SSH_USER: ${{ secrets.SSH_USER }}
+            SSH_HOST: ${{ secrets.SSH_HOST }}
             SERVER_NAME: ${{ vars.SERVER_NAME }}
             APP_VERSION: ${{ github.ref_name }}
             DATABASE_URL: ${{ secrets.DATABASE_URL }}
