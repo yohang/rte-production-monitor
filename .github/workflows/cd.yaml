@@ -123,7 +123,7 @@ jobs:
                       [ "$i" -eq 30 ] && { echo "SSH jamais disponible"; exit 1; }
                       sleep 10
                     done
-                    ssh -o BatchMode=yes "$SSH_USER@$SSH_HOST" "cloud-init status --wait"
+                    ssh -o BatchMode=yes "$SSH_USER@$SSH_HOST" "cloud-init status --wait | grep -q 'status: done'"
             -   name: Trust remote host
                 run: ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
             -   name: Docker login
